@@ -22,8 +22,7 @@ exports.index = function(req, res){
      }).catch(function(error) { next(error);});
 
   	} else {
-
-   models.Quiz.findAll().then(
+      models.Quiz.findAll().then(
       function(quizes){
            res.render('quizes/index', {quizes: quizes});
        }).catch(function(error) { next(error);});
