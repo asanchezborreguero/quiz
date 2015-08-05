@@ -40,6 +40,24 @@ app.use(function(req, res, next) {
   next();
 });
 
+// Auto-logout
+app.use( function(req, res, next) {
+  if ( req.session.user ) {
+    var ahora = new Date();                           // hora en el momento de la acción
+    var activo = new Date( req.session.user.activo ); // hora última acción
+    if ( ( ahora-activo ) > 120000 ) {                // 120000ms = 2 minutos
+        delete req.session.user;
+        req.session.errors = [ { "message": 'Por favor, vuelva a logarse. Ha transcurrido más de 2 minutos sin actividad.' } ];
+        res.redirect("/login");
+        return;
+    } else {
+        req.session.user.activo = new Date();  //actualizo hora de la acción actual
+    }
+  }
+  next();
+});
+
+
 app.use('/', routes);
 
 
